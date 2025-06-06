@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Selamat Ulang Tahun</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --color-bg: #ffffff;
+      --color-text-primary: #374151;
+      --color-text-secondary: #6b7280;
+      --color-accent: #ef4444;
+      --color-card-bg: #f9fafb;
+      --font-family-base: 'Poppins', sans-serif;
+      --transition-speed: 0.3s;
+      --border-radius: 12px;
+      --shadow-light: rgba(0,0,0,0.1);
+    }
+
+    body.dark {
+      --color-bg: #121212;
+      --color-text-primary: #e0e0e0;
+      --color-text-secondary: #a3a3a3;
+      --color-accent: #ef4444;
+      --color-card-bg: #1e1e1e;
+      --shadow-light: rgba(0,0,0,0.6);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--color-bg);
+      color: var(--color-text-primary);
+      font-family: var(--font-family-base);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      line-height: 1.5;
+      overflow-x: hidden;
+      transition: background var(--transition-speed), color var(--transition-speed);
+    }
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 2rem;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      background: var(--color-bg);
+      padding: 1rem 2rem;
+      margin-bottom: 2rem;
+      border-radius: var(--border-radius);
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--color-accent);
+      letter-spacing: 0.05em;
+      box-shadow: 0 4px 8px var(--shadow-light);
+      z-index: 10;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background var(--transition-speed), color var(--transition-speed);
+    }
+    h1 { font-weight: 700; font-size: 3rem; margin: 0; }
+    h2 { font-weight: 400; font-size: 1.25rem; color: var(--color-text-secondary); margin: 0 0 2.5rem; font-style: italic; }
+    .card {
+      background: var(--color-card-bg);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 10px var(--shadow-light);
+      max-width: 400px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      transition: background var(--transition-speed), box-shadow var(--transition-speed);
+    }
+    .avatar {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--color-accent);
+      box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
+      background: #fff;
+      transition: background var(--transition-speed);
+    }
+    body.dark .avatar {
+      background: #222;
+    }
+    .message { font-size: 1.1rem; margin: 0; padding: 0 0.5rem; }
+    button {
+      background-color: var(--color-accent);
+      color: white;
+      border: none;
+      padding: 0.9rem 2.5rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(239, 68, 68, 0.6);
+      transition: all 0.2s ease;
+    }
+    button:hover {
+      background-color: #dc2626;
+      transform: scale(1.05);
+      box-shadow: 0 10px 20px rgba(220, 38, 38, 0.8);
+    }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+      backdrop-filter: blur(8px);
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal {
+      background: var(--color-card-bg);
+      padding: 2rem 2.5rem;
+      border-radius: var(--border-radius);
+      max-width: 380px;
+      width: 90vw;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      transition: background var(--transition-speed);
+    }
+    textarea {
+      resize: none;
+      min-height: 80px;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--color-text-secondary);
+      font-size: 1rem;
+      background: var(--color-bg);
+      color: var(--color-text-primary);
+      transition: background var(--transition-speed), color var(--transition-speed);
+    }
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--color-accent);
+      border: 2px solid var(--color-accent);
+    }
+    .btn-secondary:hover {
+      background-color: var(--color-accent);
+      color: #fff;
+    }
+    #wishes-container {
+      width: 100%;
+      max-width: 700px;
+      text-align: left;
+    }
+    #wishes-container h3 {
+      color: var(--color-accent);
+      font-weight: 700;
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+    }
+    .wish-item {
+      background: var(--color-card-bg);
+      border-radius: var(--border-radius);
+      padding: 1rem 1.5rem;
+      margin-bottom: 1rem;
+      font-style: italic;
+      opacity: 0;
+      transform: translateY(15px);
+      animation: fadeInUp 0.4s forwards ease;
+      transition: background var(--transition-speed);
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Animasi masuk halaman */
+    @keyframes fadeSlideUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in {
+      opacity: 0;
+      animation: fadeSlideUp 1s ease-out forwards;
+    }
+    .delay-1 { animation-delay: 0.3s; }
+    .delay-2 { animation-delay: 0.6s; }
+    .delay-3 { animation-delay: 0.9s; }
+    .delay-4 { animation-delay: 1.2s; }
+
+    #theme-toggle {
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--color-accent);
+      transition: color var(--transition-speed);
+      user-select: none;
+    }
+    #theme-toggle:focus {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+
+.image-marquee {
+  overflow: hidden;
+  width: 100%;
+  max-width: 400px;
+  border-radius: var(--border-radius);
+  margin-top: 1rem;
+  opacity: 0;
+}
+
+.image-track {
+  display: flex;
+  width: calc(10 * 120px);
+  animation: scrollLeft 20s linear infinite;
+}
+
+.image-track img {
+  width: 100px;
+  height: 100px;
+  margin: 0 10px;
+  object-fit: cover;
+  border-radius: 12px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px var(--shadow-light);
+}
+
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+  </style>
+</head>
+<body>
+<header class="fade-in delay-1">
+  HBD buat Rara metcha
+  <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+</header>
+<main>
+  <h1 class="fade-in delay-2">Bener kan Hari ini??? ke 19</h1>
+  <h2 class="fade-in delay-3">Semoga setiap hari selalu membawa kebahagiaan dan keberuntungan yang tak terhingga.</h2>
+  <div class="card fade-in delay-4">
+    <img class="avatar" src="2021.jpg" alt="Kue ulang tahun" />
+    <p class="message">Zahra Adila Mecha <br>Semoga semua mimpi dan harapanmu jadi kenyataan. Selamat ulang tahun, Orang baikk..</p>
+    <button id="open-wish-btn">Apa Impianmuu</button>
+  </div>
+  <section id="wishes-container">
+    <h3></h3>
+  </section>
+</main>
+
+<!-- Modal -->
+<div id="wish-modal" class="modal-overlay" aria-hidden="true">
+  <div class="modal">
+    <h3>Kirimkan Ucapan Selamatmu</h3>
+    <textarea id="wish-text" placeholder="Tulis ucapanmu di sini..." maxlength="200"></textarea>
+    <div class="modal-buttons">
+      <button class="btn-secondary" id="close-wish-btn">Batal</button>
+      <button id="send-wish-btn" disabled>Kirim</button>
+    </div>
+  </div>
+</div>
+
+<!-- Elements that will be shown after typeText completes -->
+<div id="additional-content" style="display: none;">
+  <p class="fade-in delay-4">ngga nyangka dulu masih bocil sekarang udah dewasa aja 19 tahun</p>
+  <div class="image-marquee">
+    <div class="image-track">
+      <img src="rara1.jpg" alt="" />
+      <img src="rara2.jpg" alt="" />
+      <img src="rara3.jpg" alt="" />
+      <img src="rara4.jpg" alt="" />
+      <img src="rara5.png" alt="" />
+      <img src="rara6.png" alt="" />
+      <img src="rara8.jpg" alt="" />
+    </div>
+  </div>
+</div>
+
+<!-- Musik -->
+<audio id="birthday-music" src="https://g.top4top.io/m_3444dsdqp1.mp3" autoplay loop muted></audio>
+<audio id="click-sound" src=""></audio>
+
+<script>
+  const openBtn = document.getElementById('open-wish-btn');
+  const closeBtn = document.getElementById('close-wish-btn');
+  const modal = document.getElementById('wish-modal');
+  const textarea = document.getElementById('wish-text');
+  const sendBtn = document.getElementById('send-wish-btn');
+  const wishesContainer = document.getElementById('wishes-container');
+  const music = document.getElementById('birthday-music');
+  const clickSound = document.getElementById('click-sound');
+  const additionalContent = document.getElementById('additional-content');
+
+  openBtn.onclick = () => {
+    clickSound.play();
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    textarea.value = '';
+    sendBtn.disabled = true;
+    textarea.focus();
+  };
+
+  closeBtn.onclick = closeModal;
+  modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+  function closeModal() {
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  textarea.oninput = () => {
+    sendBtn.disabled = textarea.value.trim().length === 0;
+  };
+
+  sendBtn.onclick = () => {
+    const wishText = textarea.value.trim();
+    if (wishText.length > 0) {
+      addWish(wishText);
+      alert('Makasih udah nyebutin Impianmu');
+      closeModal();
+    }
+  };
+
+  function addWish(text) {
+    const userWishEl = document.createElement('div');
+    userWishEl.className = 'wish-item';
+    userWishEl.textContent = '' + text;
+    wishesContainer.appendChild(userWishEl);
+
+    const replyEl = document.createElement('div');
+    replyEl.className = 'wish-item';
+    wishesContainer.appendChild(replyEl);
+
+    typeText(replyEl, 'Semoga bisa terwujud dan semoga kamu bisa ditemukan dengan orang yang bisa menerimamu dengan baik, selalu bahagia,  sory ya tiba" bikin gini haha soalnya aku keingetttt aja sama hari lahirmu karna sama-sama 12 wkwk..... Sehat selaluuu ra<3', 20);
+
+    wishesContainer.scrollTop = wishesContainer.scrollHeight;
+
+    music.muted = false;
+    music.play().catch(err => {
+      console.warn('Autoplay mungkin diblokir oleh browser:', err);
+    });
+  }
+
+  function typeText(el, text, speed) {
+    let index = 0;
+    const interval = setInterval(() => {
+      if (index < text.length) {
+        el.textContent += text[index++];
+      } else {
+        clearInterval(interval);
+        // Show the additional content after typing is complete
+        showAdditionalContent();
+      }
+    }, speed);
+  }
+
+  function showAdditionalContent() {
+    // Show the hidden content
+    additionalContent.style.display = 'block';
+    
+    // Trigger animations
+    const elements = additionalContent.querySelectorAll('.fade-in, .image-marquee');
+    elements.forEach(el => {
+      if (el.classList.contains('fade-in')) {
+        el.style.animationPlayState = 'running';
+      } else if (el.classList.contains('image-marquee')) {
+        el.style.opacity = '1';
+      }
+    });
+  }
+
+  class ConfettiParticle {
+    constructor(width, height, ctx) {
+      this.ctx = ctx;
+      this.x = Math.random() * width;
+      this.y = Math.random() * height - height;
+      this.size = Math.random() * 7 + 3;
+      this.color = ['#ef4444', '#f87171', '#fca5a5', '#b91c1c'][Math.floor(Math.random() * 4)];
+      this.speedY = Math.random() * 3 + 1;
+      this.angle = Math.random() * 2 * Math.PI;
+      this.swing = Math.random() * 0.05 + 0.01;
+    }
+    update(height) {
+      this.y += this.speedY;
+      this.angle += this.swing;
+      this.x += Math.sin(this.angle) * 2;
+      if (this.y > height) {
+        this.y = 0;
+        this.x = Math.random() * window.innerWidth;
+      }
+    }
+    draw() {
+      this.ctx.fillStyle = this.color;
+      this.ctx.beginPath();
+      this.ctx.ellipse(this.x, this.y, this.size * 0.6, this.size, this.angle, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+  }
+
+  function initConfetti() {
+    const canvas = document.createElement('canvas');
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = Array.from({ length: 100 }, () => new ConfettiParticle(canvas.width, canvas.height, ctx));
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update(canvas.height);
+        p.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    animate();
+  }
+
+  window.onload = initConfetti;
+
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  const body = document.body;
+
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    body.classList.add('dark');
+    themeToggleBtn.textContent = '☀️';
+  } else {
+    themeToggleBtn.textContent = '🌙';
+  }
+
+  themeToggleBtn.onclick = () => {
+    if (body.classList.contains('dark')) {
+      body.classList.remove('dark');
+      themeToggleBtn.textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    } else {
+      body.classList.add('dark');
+      themeToggleBtn.textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    }
+  };
+</script>
+</body>
+</html>
